@@ -6,14 +6,25 @@ module.exports = (err, req, res, next) =>{
         res.status(err.statusCode).json({
             success: false,
             message: err.message,
-            stack: err.stack
+            stack: err.stack,
+            error: err
         })
 
     }
     if(process.env.NODE_ENV == 'production'){
+        let message = err.message;
+        let error = new Error(message);
+        if(err.name == "ValidationError"){
+            message = Object.values(err.errors).map(value => value.message)
+            error = new Error(message, 404)
+        }
+        if(err.name == `CastError`){
+            message = `Resource not found: ${err.path}`;
+            error = new Error(message)
+        }
         res.status(err.statusCode).json({
             success: false,
-            message: err.message,
+            message: error.message || 'Internal server error',
         })
     }
 }
