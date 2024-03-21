@@ -1,4 +1,5 @@
 const Product = require('../models/productModel')
+const ErrorHandler =require('../utils/errorHandler')
 
 //Get product - api/v1/products
 exports.getProducts = async(req,res,next)=>{
@@ -48,10 +49,7 @@ exports.getSingleProduct = async(req,res,next) =>{
         });
     }
     catch(err){
-        res.status(404).json({
-            success:false,
-            message:"Product Not found"
-        })
+        next(new ErrorHandler('Product not found',404))
     }
 }
 
@@ -69,10 +67,7 @@ try{
     });
 }
 catch(err){
-    res.status(404).json({
-        success:false,
-        message: `Product has not found with given id: ${req.params.id}`
-    })
+    next(new ErrorHandler('Product not found',404))
 }
 }
 
@@ -88,16 +83,10 @@ exports.deleteProduct = async(req,res,next) =>{
         });
        }
        else{
-        res.status(400).json({
-            success: false,
-            message:"Already deleted this product from database!..."
-        });
+        next(new ErrorHandler('Product already deleted from this database.',404))
        }
     }
     catch(err){
-        res.status(404).json({
-            success: false,
-            message: `Product not found in this id ${req.params.id}`
-        });
+        next(new ErrorHandler('Product not found',404))
     } 
 }
