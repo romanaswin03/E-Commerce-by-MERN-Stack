@@ -4,10 +4,11 @@ const router = epxress.Router();
 const {isAuthenticateUser, authorizedRoles} = require('../middlewares/authenticate')
 
 router.route('/products').get(isAuthenticateUser, getProducts);
-router.route('/product/new').post(isAuthenticateUser, authorizedRoles('admin'), newProduct);
 router.route('/product/:id')
-                            .get(getSingleProduct)
-                            .put(updateProduct)
-                            .delete(deleteProduct)
+.get(getSingleProduct)
+.put(updateProduct)
+.delete(deleteProduct)
 
+//Admin routes
+router.route('/admin/product/new').post(isAuthenticateUser, authorizedRoles('admin'), newProduct);
 module.exports = router;

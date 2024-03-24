@@ -150,3 +150,57 @@ exports.updateProfile = catchAsyncError(async(req, res, next) =>{
         user
     })
 })
+
+//Admin: Get all users - api/v1/admin/users
+exports.getAllUsers = catchAsyncError(async(req, res, next) =>{
+    const users = await User.find();
+    res.status(200).json({
+        success: true,
+        users
+    })
+})
+
+//Admin: Get specific user - api/v1/admin/user:/id
+exports.getUser = catchAsyncError(async(req, res, next) =>{
+    const user = await User.findById(req.params.id)
+    if(!user){
+        return next(new ErrorHandler(`User not found with this ${req.params.id}`));
+    }
+
+    res.status(200).json({
+        success: true,
+        user
+    })
+})
+
+//Admin: Update User - api/v1/admin/user:/id
+exports.updateUser = catchAsyncError(async(req, res, next) =>{
+
+    const newUserData = {
+        name : req.body.name,
+        email : req.body.email,
+        role: req.body.role
+    }
+    const user = await User.findByIdAndUpdate(req.params.id, newUserData, {
+        new: true,
+        runValidators: true
+    })
+
+    res.status(200).json({
+        success: true,
+        user
+    })
+})
+
+//Admin: Delete user - api/v1/admin/user:/id
+exports.deleteUser = catchAsyncError(async(req, res, next) =>{
+    const user = await User.findById(req.params.id)
+    if(!user){
+        return next(new ErrorHandler(`User not found with this ${req.params.id}`));
+    }
+
+    await User.deleteOne();
+    res.status(200).json({
+        success: true
+    })
+})
