@@ -5,14 +5,14 @@ const APIFeatures = require('../utils/apiFeatures');
 
 //Get product - api/v1/products
 exports.getProducts = catchAsyncError(async(req,res,next)=>{
-        const resPerPage = 2;
+        const resPerPage = 3;
         const apiFeatures = new APIFeatures(Product.find(), req.query).search().filter().paginate(resPerPage);
 
-        const product = await apiFeatures.query;
+        const products = await apiFeatures.query;
         res.status(200).json({
             success: true,
-            count: product.length,
-            product
+            count: products.length,
+            products
         })
 })
 //Created product - api/v1/product/new
@@ -24,7 +24,7 @@ exports.newProduct = catchAsyncError(async(req,res,next) =>{
             res.status(200).json({
                 success: true,
                 message: "Product created sucessfully",
-                product: product
+                product
             })
 });
 

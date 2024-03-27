@@ -1,4 +1,5 @@
 
+import { HelmetProvider } from 'react-helmet-async';
 import './App.css';
 import Home from './components/Home';
 import Footer from './components/layouts/Footer';
@@ -10,12 +11,13 @@ function App() {
     <Router>
 
     <div className="App">
-      <Header />
-      <Routes>
-        <Route path='/' element={<Home />} />
-      </Routes>
-      
-      <Footer />
+      <HelmetProvider>
+          <Header />
+              <Routes>
+                  <Route path='/' element={<Home />} />
+              </Routes>
+          <Footer />
+      </HelmetProvider>
     </div>
     </Router>
   );

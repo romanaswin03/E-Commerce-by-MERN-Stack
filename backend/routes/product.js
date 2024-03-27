@@ -5,7 +5,7 @@ const { getProducts, newProduct, getSingleProduct, updateProduct,
 const router = epxress.Router();
 const {isAuthenticateUser, authorizedRoles} = require('../middlewares/authenticate')
 
-router.route('/products').get(isAuthenticateUser, getProducts);
+router.route('/products').get(getProducts);
 router.route('/product/:id')
                             .get(getSingleProduct)
                             .put(updateProduct)
