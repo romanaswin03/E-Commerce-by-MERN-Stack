@@ -5,7 +5,7 @@ function Header() {
     <nav className="navbar row">
       <div className="col-12 col-md-3">
         <div className="navbar-brand mx-4">
-          <img width="80px" height="40px" src="/images/shoplogo.jpg" />
+          <img width="80px" height="40px" alt="Shoppingcart Logo" src="/images/shoplogo.jpg" />
         </div>
       </div>
 
