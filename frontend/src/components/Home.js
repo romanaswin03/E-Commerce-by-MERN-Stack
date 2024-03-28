@@ -24,7 +24,7 @@ export default function Home() {
             })
         }
         
-        dispatch(getProducts(currentPage))
+        dispatch(getProducts(null,currentPage))
     }, [error, dispatch, currentPage])
 
   return (
@@ -50,8 +50,8 @@ export default function Home() {
                         nextPageText={'Next'}
                         firstPageText={'First'}
                         lastPageText={'Last'}
-                        itemClass='page-item'
-                        linkClass='page-link'
+                        itemClass={'page-item'}
+                        linkClass={'page-link'}
                     />
                 </div> : null }
             </Fragment>

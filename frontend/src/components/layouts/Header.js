@@ -1,12 +1,16 @@
 import React from 'react'
 import Search from './Search'
+import { Link } from 'react-router-dom'
 
 function Header() {
   return (
     <nav className="navbar row">
       <div className="col-12 col-md-3">
         <div className="navbar-brand mx-4">
+          <Link to={"/"}>
+
           <img width="80px" height="40px" alt="Shoppingcart Logo" src="/images/shoplogo.jpg" />
+          </Link>
         </div>
       </div>
 
