@@ -1,6 +1,6 @@
 import React from 'react'
 import Search from './Search'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { DropdownButton, Dropdown, Image } from 'react-bootstrap'
 import { logOut } from '../../actions/userActions'
@@ -9,6 +9,7 @@ function Header() {
   const {isAuthenticate, user} = useSelector(state => state.authState);
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const logoutHandler = () => {
     dispatch(logOut)
   }
@@ -39,6 +40,7 @@ function Header() {
                       <span>{user.name}</span>
                   </Dropdown.Toggle>
                   <Dropdown.Menu>
+                    <Dropdown.Item onClick={() => {navigate('/myprofile')}} className='text-dark'>Profile</Dropdown.Item>
                     <Dropdown.Item onClick={logoutHandler} className='text-danger'>LogOut</Dropdown.Item>
                   </Dropdown.Menu>
               </Dropdown>
