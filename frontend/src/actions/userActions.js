@@ -14,7 +14,10 @@ import {
     logOutFail,
     updateProfileRequest,
     updateProfileSuccess,
-    updateProfileFail
+    updateProfileFail,
+    updatePasswordRequest,
+    updatePasswordSuccess,
+    updatePasswordFail
 } from "../slices/authSlice"
 
 export const login = (email, password) => async(dispatch) => {
@@ -84,5 +87,22 @@ export const updateProfile = (userData) => async(dispatch) => {
         dispatch(updateProfileSuccess(data))
     } catch (error) {
         dispatch(updateProfileFail(error.response.data.message))
+    }
+} 
+
+export const updatePassword = (formData) => async(dispatch) => {
+
+    try {
+        dispatch(updatePasswordRequest())
+        const config = {
+            headers: {
+                'Content-type': 'application/json'
+            }
+        }
+
+        await axios.put(`/api/v1/password/change`,formData, config);
+        dispatch(updatePasswordSuccess())
+    } catch (error) {
+        dispatch(updatePasswordFail(error.response.data.message))
     }
 } 
