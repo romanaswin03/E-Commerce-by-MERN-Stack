@@ -54,7 +54,7 @@ export default function Register(){
             onOpen: () =>{dispatch( clearAuthError)}
         })
         return 
-    },[error, isAuthenticate])
+    },[error, isAuthenticate, dispatch, navigate])
 
     return(
         <div className="row wrapper">
@@ -97,7 +97,7 @@ export default function Register(){
                             <img
                                 src={avatarPreview}
                                 className='rounded-circle'
-                                alt='image'
+                                alt='Avatar'
                             />
                         </figure>
                     </div>
