@@ -27,11 +27,11 @@ export default function Cart(){
             {items.length === 0 ?
             <h2 className="mt-5">Your Cart is Empty</h2> :
             <Fragment>
-                <h2 className="mt-5">Your Cart: <b>{items.length}</b></h2>
+                <h2 className="mt-5">Your Cart: <b>{items.length} items</b></h2>
                 <div className="row d-flex justify-content-between">
                     <div className="col-12 col-lg-8">
                         {items.map(item => (
-                            <Fragment>
+                            <Fragment key={item.product}>
                                 <hr />
                                 <div className="cart-item">
                                     <div className="row">

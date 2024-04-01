@@ -10,8 +10,8 @@ export default function ConfirmOrder() {
     const {user} = useSelector(state => state.authState);
     const navigate = useNavigate();
 
-    const itemsPrice = cartItems.reduce((acc, item) => (acc + item.price * item.quantity),0)
-    const shippingPrice = itemsPrice > 200 ? 0 : 25;
+    const itemsPrice = cartItems.reduce((acc, item) => (acc + item.price * item.quantity),0);
+    const shippingPrice = itemsPrice > 500 ? 0 : 25;
     let taxPrice = Number(0.05 * itemsPrice);
     const totalPrice = Number(itemsPrice + shippingPrice + taxPrice).toFixed(2);
     taxPrice = Number(taxPrice).toFixed(2);
@@ -29,7 +29,7 @@ export default function ConfirmOrder() {
 
     useEffect(() => {
         validateShipping(shippingInfo, navigate)
-    },[shippingInfo,navigate])
+    },[])
 
     return (
         <Fragment>
@@ -59,7 +59,7 @@ export default function ConfirmOrder() {
             
             
                                     <div className="col-4 col-lg-4 mt-4 mt-lg-0">
-                                    <p>{item.quantity} x ₹{item.price} = <b>{item.quantity * item.price}</b></p>
+                                    <p>{item.quantity} x ₹{item.price} = <b>₹{item.quantity * item.price}</b></p>
                                     </div>
             
                                 </div>

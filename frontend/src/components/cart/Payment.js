@@ -7,6 +7,8 @@ import { CardNumberElement, CardExpiryElement, CardCvcElement } from "@stripe/re
 import axios from "axios";
 import { toast } from "react-toastify";
 import { orderCompleted } from "../../slices/cartSlice";
+import {createOrder} from '../../actions/orderActions';
+import { clearError as clearOrderError} from '../../slices/orderSlice';
 
 export default function Payment () {
 
@@ -17,6 +19,8 @@ export default function Payment () {
     const orderInfo = JSON.parse(sessionStorage.getItem('orderInfo'))
     const {user} = useSelector(state => state.authState)
     const { items:cartItems, shippingInfo} = useSelector(state => state.cartState)
+    const {error: orderError} = useSelector(state => state.orderState)
+    
     const paymentData = {
             amount: Math.round(orderInfo.totalPrice * 100),
             shipping:{
@@ -45,6 +49,14 @@ export default function Payment () {
 
     useEffect(() => {
         validateShipping(shippingInfo, navigate)
+        if(orderError) {
+            toast(orderError, {
+                position: "bottom-center",
+                type: 'error',
+                onOpen: () =>{dispatch( clearOrderError())}
+            })
+            return
+        }
     })
 
     const submitHandler = async(e) => {
@@ -64,7 +76,7 @@ export default function Payment () {
             })
 
             if(result.error){
-                toast(result.error.message, {
+                toast((await result).error.message, {
                     type: 'error',
                     position: "bottom-center"
                 })
@@ -72,10 +84,15 @@ export default function Payment () {
             }else{
                 if((await result).paymentIntent.status === 'succeeded'){
                     toast('Payment Success!', {
-                        type: 'error',
+                        type: 'success',
                         position: "bottom-center"
                     })
+                    order.paymentInfo = {
+                        id: result.paymentIntent.id,
+                        status: result.paymentIntent.status
+                    }
                     dispatch(orderCompleted())
+                    dispatch(createOrder(order))
                     navigate('/order/success')
                 }else{
                     toast('Please Try again!', {
@@ -89,6 +106,7 @@ export default function Payment () {
             
         }
     }
+  
     return (
        <div className="row wrapper">
 		    <div className="col-10 col-lg-5">
