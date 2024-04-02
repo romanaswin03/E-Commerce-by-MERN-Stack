@@ -1,4 +1,4 @@
-import {createOrderFail, createOrderRequest, createOrderSuccess, userOrdersFail, userOrdersRequest, userOrdersSuccess} from '../slices/orderSlice';
+import {createOrderFail, createOrderRequest, createOrderSuccess, orderDetailFail, orderDetailRequest, orderDetailSuccess, userOrdersFail, userOrdersRequest, userOrdersSuccess} from '../slices/orderSlice';
 import axios from 'axios';
 
 export const createOrder = order => async(dispatch) => {
@@ -14,10 +14,19 @@ export const createOrder = order => async(dispatch) => {
 export const userOrders = async(dispatch) => {
     try {
         dispatch(userOrdersRequest())
-        // eslint-disable-next-line no-undef
         const {data} = await axios.get(`/api/v1/myorders`)
         dispatch(userOrdersSuccess(data))
     } catch (error) {
         dispatch(userOrdersFail(error.response.data.message))
+    }
+}
+
+export const orderDetail = id => async(dispatch) => {
+    try {
+        dispatch(orderDetailRequest())
+        const {data} = await axios.get(`/api/v1/order/${id}`)
+        dispatch(orderDetailSuccess(data))
+    } catch (error) {
+        dispatch(orderDetailFail(error.response.data.message))
     }
 }
