@@ -9,13 +9,15 @@ import Metadata from "../layouts/Metadata";
 import { addCartItem } from "../../actions/cartActions";
 import {Modal} from 'react-bootstrap';
 import {toast} from 'react-toastify'
-import { clearReviewSubmitted, clearError } from "../../slices/productSlice";
+import { clearReviewSubmitted, clearError, clearProduct } from "../../slices/productSlice";
+import ProductReview from "./ProductReview";
 
 
 export default function productDetail(){
 
     
     const {loading, product={}, isReviewSubmitted, error} =  useSelector((state)=>state.productState);
+    const {user} = useSelector(state => state.authState)
     const dispatch = useDispatch();
     const { id } = useParams()
 
@@ -56,7 +58,6 @@ export default function productDetail(){
                 position: "bottom-center",
                 onOpen: () => dispatch(clearReviewSubmitted())
             })
-            return;
         }
         if(error){
             toast(error, {
@@ -70,7 +71,11 @@ export default function productDetail(){
             dispatch(getProduct(id))
         }
 
-    },[dispatch, id, isReviewSubmitted, error, product._id])
+        return () => {
+            dispatch(clearProduct())
+        }
+
+    },[dispatch, id, isReviewSubmitted, error])
 
     
 
@@ -129,10 +134,13 @@ export default function productDetail(){
                         <p>{product.description}</p>
                         <hr/>
                         <p id="product_seller mb-3">Sold by: <strong>{product.seller}</strong></p>
-                        
+                        {
+                        user ?
                         <button onClick={handleShow} id="review_btn" type="button" className="btn btn-primary mt-4" data-toggle="modal" data-target="#ratingModal">
                                     Submit Your Review
-                        </button>
+                        </button> :
+                        <div className="alert alert-danger mt-5">Login to post Review</div>
+                        }
                         
                         <div className="row mt-2 mb-5">
                             <div className="rating w-50">
@@ -170,6 +178,9 @@ export default function productDetail(){
                 </div>
 
                 </div>
+                {product.reviews && product.reviews.length > 0  ? 
+                <ProductReview reviews={product.reviews} /> : null
+                }
             </Fragment>
             }
         </Fragment>
