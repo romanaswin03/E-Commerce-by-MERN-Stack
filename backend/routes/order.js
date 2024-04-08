@@ -8,8 +8,8 @@ router.route('/order/:id').get(isAuthenticateUser, getSingleOrder);
 router.route('/myOrders').get(isAuthenticateUser, myOders);
 
 //Admin routes
-router.route('/orders').get(isAuthenticateUser, authorizedRoles('admin'), orders);
-router.route('/order/:id').put(isAuthenticateUser, authorizedRoles('admin'), updateOrder)
+router.route('/admin/orders').get(isAuthenticateUser, authorizedRoles('admin'), orders);
+router.route('/admin/order/:id').put(isAuthenticateUser, authorizedRoles('admin'), updateOrder)
                         .delete(isAuthenticateUser, authorizedRoles('admin'), deleteOrder)
 
 module.exports = router;
