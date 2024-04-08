@@ -1,13 +1,13 @@
 import { Fragment, useEffect, useState } from "react";
 import Sidebar from "./Sidebar";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { createNewProduct } from "../../actions/productActions";
+import { useNavigate, useParams } from "react-router-dom";
+import { getProduct, updateProduct } from "../../actions/productActions";
 import { toast } from "react-toastify";
-import { clearError, clearProductCreated } from "../../slices/productSlice";
+import { clearError, clearProductUpdated } from "../../slices/productSlice";
 
-export default function NewProduct() {
-
+ 
+export default function UpdateProduct() {
     const [name, setName] = useState("");
     const [price, setPrice] = useState("");
     const [description, setDescription] = useState("");
@@ -15,9 +15,12 @@ export default function NewProduct() {
     const [stock, setStock] = useState(0);
     const [seller, setSeller] = useState("");
     const [images, setImages] = useState([]);
+    const [imagesCleared, setImagesCleared] = useState(false);
     const [imagesPreview, setImagesPreview] = useState([]);
+    const {id: productId} = useParams();
+   
 
-    const {loading, isProductCreated, error} = useSelector(state => state.productState);
+    const {loading, isProductUpdated, error, product} = useSelector(state => state.productState);
 
     const categories = [
         'Electronics',
@@ -64,28 +67,54 @@ export default function NewProduct() {
         images.forEach(image => {
             formData.append('images',image)
         })
-        dispatch(createNewProduct(formData))
+        formData.append('imagesCleared', imagesCleared);
+        dispatch(updateProduct(productId, formData))
+    }
+
+    const clearImagesHandler = () => {
+        setImages([]);
+        setImagesPreview([]);
+        setImagesCleared(true);
     }
 
     useEffect(() => {
-        if(isProductCreated){
-            toast('Product Created Successfully', {
+        if(isProductUpdated){
+            toast('Product Updated Successfully', {
                 type: 'success',
                 position: "bottom-center",
-                onOpen: () => dispatch(clearProductCreated())
+                onOpen: () => dispatch(clearProductUpdated())
             })
-            navigate('/admin/products');
+            setImages([])
             return;
         }
         if(error){
             toast(error, {
                 position: "bottom-center",
                 type: 'error',
-                onOpen: () =>{dispatch( clearError)}
+                onOpen: () =>{dispatch( clearError())}
             })
             return
-            }
-    }, [isProductCreated, dispatch, error, navigate])
+        }
+
+        dispatch(getProduct(productId))
+    }, [isProductUpdated, dispatch, error, navigate, productId])
+
+    useEffect(() => {
+        if(product._id) {
+            setName(product.name);
+            setPrice(product.price);
+            setDescription(product.description);
+            setStock(product.stock);
+            setSeller(product.seller);
+            setCategory(product.category);
+
+            let images =[];
+            product.images.forEach(image => {
+                images.push(image.image)
+            });
+            setImagesPreview(images)
+        }
+    },[product])
 
     return(
         <div className="row">
@@ -96,7 +125,7 @@ export default function NewProduct() {
                 <Fragment>
                 <div className="wrapper my-5"> 
                     <form onSubmit={submitHandler} className="shadow-lg" encType='multipart/form-data'>
-                        <h1 className="mb-4">New Product</h1>
+                        <h1 className="mb-4">Update Product</h1>
 
                         <div className="form-group">
                         <label htmlFor="name_field">Name</label>
@@ -133,7 +162,7 @@ export default function NewProduct() {
 
                         <div className="form-group">
                             <label htmlFor="category_field">Category</label>
-                            <select onChange={e => setCategory(e.target.value)} className="form-control" id="category_field">
+                            <select value={category} onChange={e => setCategory(e.target.value)} className="form-control" id="category_field">
                                 <option value="">Select</option>
                                 {categories.map( category => (
                                     <option key={category} value={category}>{category}</option>
@@ -180,6 +209,8 @@ export default function NewProduct() {
                                         Choose Images
                                     </label>
                                 </div>
+
+                                {imagesPreview.length > 0 && <span className="mr-2" onClick={clearImagesHandler} style={{cursor: "pointer"}}><i className="fa fa-trash"></i></span>}
                                 {imagesPreview.map(image => (
                                     // eslint-disable-next-line jsx-a11y/img-redundant-alt
                                     <img
@@ -201,7 +232,7 @@ export default function NewProduct() {
                         disabled = {loading}
                         className="btn btn-block py-3"
                         >
-                        CREATE
+                        UPDATE
                         </button>
 
                     </form>
@@ -210,5 +241,4 @@ export default function NewProduct() {
             </div>           
         </div>
     )
-        
 }

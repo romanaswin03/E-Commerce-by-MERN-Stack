@@ -25,10 +25,7 @@ const upload = multer({storage: multer.diskStorage({
 })})
 
 router.route('/products').get(getProducts);
-router.route('/product/:id')
-                            .get(getSingleProduct)
-                            .put(updateProduct)
-                            .delete(deleteProduct)
+router.route('/product/:id').get(getSingleProduct)
 
 router.route('/review').put(isAuthenticateUser, createReview)
                         .delete(deleteReview)
@@ -37,4 +34,6 @@ router.route('/reviews').get(isAuthenticateUser, getReviews)
 //Admin routes
 router.route('/admin/product/new').post(isAuthenticateUser, authorizedRoles('admin'),upload.array('images'), newProduct);
 router.route('/admin/products').get(isAuthenticateUser, authorizedRoles('admin'), getAdminProducts);
+router.route('/admin/product/:id').delete(isAuthenticateUser, authorizedRoles('admin'), deleteProduct);
+router.route('/admin/product/:id').put(isAuthenticateUser, authorizedRoles('admin'),upload.array('images'), updateProduct);
 module.exports = router;

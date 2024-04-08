@@ -4,14 +4,16 @@ import { useDispatch, useSelector } from "react-redux"
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { clearError } from "../../slices/productsSlice";
-import { getAdminProducts } from "../../actions/productActions";
+import { deleteProduct, getAdminProducts } from "../../actions/productActions";
 import Loader from '../layouts/Loader';
 import { MDBDataTable} from 'mdbreact';
 import Sidebar from "./Sidebar";
+import { clearProductDeleted } from "../../slices/productSlice";
 
 export default function ProductList() {
 
     const {products=[], loading= true, error} = useSelector(state => state.productsState)
+    const {isProductDeleted, error:productError} = useSelector(state => state.productState)
     const dispatch = useDispatch();
 
     const setProducts = () => {
@@ -54,7 +56,7 @@ export default function ProductList() {
                 actions : (
                     <Fragment>
                         <Link to={`/admin/product/${product._id}`} className="btn btn-primary"><i className="fa fa-pencil"></i></Link>
-                        <Button className="btn btn-danger py-1 px-2 ml-2">
+                        <Button onClick={e => deleteHandler(e, product._id)} className="btn btn-danger py-1 px-2 ml-2">
                             <i className="fa fa-trash"></i>
                         </Button>
                     </Fragment>
@@ -64,17 +66,29 @@ export default function ProductList() {
         return data;
     }
 
+    const deleteHandler = (e, id) => {
+        dispatch(deleteProduct(id))
+    }
+
     useEffect(() =>{
-        if(error) {
-            toast(error, {
+        if(error || productError) {
+            toast(error || productError, {
                 position: "bottom-center",
                 type: 'error',
                 onOpen: () =>{dispatch( clearError())}
             })
             return
         }
+        if(isProductDeleted){
+            toast('Product Deleted Successfully', {
+                type: 'success',
+                position: "bottom-center",
+                onOpen: () => dispatch(clearProductDeleted())
+            })
+            return;
+        }
         dispatch(getAdminProducts)
-    },[dispatch, error])
+    },[dispatch, error, isProductDeleted, productError])
 
     return (
         <div className="row">
