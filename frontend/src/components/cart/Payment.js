@@ -20,7 +20,6 @@ export default function Payment () {
     const {user} = useSelector(state => state.authState)
     const { items:cartItems, shippingInfo} = useSelector(state => state.cartState)
     const {error: orderError} = useSelector(state => state.orderState)
-    
     const paymentData = {
             amount: Math.round(orderInfo.totalPrice * 100),
             shipping:{
@@ -57,7 +56,7 @@ export default function Payment () {
             })
             return
         }
-    })
+    },[dispatch, navigate, orderError, shippingInfo])
 
     const submitHandler = async(e) => {
         e.preventDefault();

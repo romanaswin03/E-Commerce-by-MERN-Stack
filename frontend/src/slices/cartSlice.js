@@ -74,7 +74,7 @@ const cartSlice = createSlice({
             return {
                 items: [],
                 loadng: false,
-                shippingInfo: {}
+                //shippingInfo: {}
             }
         }
     }
